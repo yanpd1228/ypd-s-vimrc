@@ -1,4 +1,7 @@
+if has('python3')
+endif
 set fencs=utf-8,ucs-bom,shift-jis,gb18030,gbk,gb2312,cp936
+
 set termencoding=utf-8
 set encoding=utf-8
 set fileencodings=ucs-bom,utf-8,cp936
@@ -6,7 +9,6 @@ set fileencoding=utf-8
 " 常用设置
 " 设置行号
 set number
-
 " 按F2 进入粘贴模式
 " set pastetoggle=<F2>
 " 高亮搜索
@@ -48,21 +50,23 @@ call plug#begin('~/.vim/plugged')
 Plug 'mhinz/vim-startify'
 Plug 'preservim/nerdtree'
 Plug 'dense-analysis/ale'
-Plug 'Valloric/YouCompleteMe', { 'do': './install.py --clang-completer',
-            \ 'for': ['s', 'S', 'c', 'h', 'C', 'cpp', 'cc', 'cxx', 'go', 'java', 'js', 'php', 'sh', 'conf', 'vimrc', 'bashrc', 'config', 'ini', 'mk', 'makefile', 'Makefile'] }
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'skywind3000/asyncrun.vim'
 Plug 'jiangmiao/auto-pairs'
 Plug 'tomasr/molokai'
 Plug 'altercation/vim-colors-solarized'
+Plug 'Yggdroot/indentLine'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes' "airline 的主题
 call plug#end()
 "主题设置
 syntax enable
-"colorscheme molokai
-"let g:molokai_original = 1
-"let g:rehash256 = 1
+colorscheme molokai
+let g:molokai_original = 1
+let g:rehash256 = 1
 set background=dark
 set t_Co=256
-colorscheme solarized
+"colorscheme solarized
 
 "代码编译设置
 " 自动打开 quickfix window ，高度为 6
@@ -162,3 +166,56 @@ let g:ale_list_window_size = 10
 let g:AutoPairs = {'(':')', '[':']', '{':'}',"'":"'",'"':'"'}
 let g:AutoPairs['<']='>'
 let g:AutoPairsMapCR = 1
+
+let g:indent_guides_guide_size            = 1  " 指定对齐线的尺寸
+let g:indent_guides_start_level           = 2  " 从第二层开始可视化显示缩进
+
+" 设置状态栏
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#left_alt_sep = '|'
+let g:airline#extensions#tabline#buffer_nr_show = 0
+let g:airline#extensions#tabline#formatter = 'default'
+let g:airline_theme = 'desertink'  " 主题
+let g:airline#extensions#keymap#enabled = 1
+let g:airline#extensions#tabline#buffer_idx_mode = 1
+let g:airline#extensions#tabline#buffer_idx_format = {
+       \ '0': '0 ',
+       \ '1': '1 ',
+       \ '2': '2 ',
+       \ '3': '3 ',
+       \ '4': '4 ',
+       \ '5': '5 ',
+       \ '6': '6 ',
+       \ '7': '7 ',
+       \ '8': '8 ',
+       \ '9': '9 '
+       \}
+" 设置切换tab的快捷键 <\> + <i> 切换到第i个 tab
+nmap <leader>1 <Plug>AirlineSelectTab1
+nmap <leader>2 <Plug>AirlineSelectTab2
+nmap <leader>3 <Plug>AirlineSelectTab3
+nmap <leader>4 <Plug>AirlineSelectTab4
+nmap <leader>5 <Plug>AirlineSelectTab5
+nmap <leader>6 <Plug>AirlineSelectTab6
+nmap <leader>7 <Plug>AirlineSelectTab7
+nmap <leader>8 <Plug>AirlineSelectTab8
+nmap <leader>9 <Plug>AirlineSelectTab9
+" 设置切换tab的快捷键 <\> + <-> 切换到前一个 tab
+nmap <leader>- <Plug>AirlineSelectPrevTab
+" 设置切换tab的快捷键 <\> + <+> 切换到后一个 tab
+nmap <leader>+ <Plug>AirlineSelectNextTab
+" 设置切换tab的快捷键 <\> + <q> 退出当前的 tab
+nmap <leader>q :bp<cr>:bd #<cr>
+" 修改了一些个人不喜欢的字符
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+let g:airline_symbols.linenr = "CL" " current line
+let g:airline_symbols.whitespace = '|'
+let g:airline_symbols.maxlinenr = 'Ml' "maxline
+let g:airline_symbols.branch = 'BR'
+let g:airline_symbols.readonly = "RO"
+let g:airline_symbols.dirty = "DT"
+let g:airline_symbols.crypt = "CR"
+nmap <tab> :bn<cr> "设置tab键映射"
+nmap <C-D> :bdelete<cr> "设置ctrl+D 关闭buffer"
