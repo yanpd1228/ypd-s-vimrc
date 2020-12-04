@@ -1,181 +1,260 @@
-if has('python3')
+call plug#begin('~/.config/vim_plug/plugged')
+    Plug 'mhinz/vim-startify'
+    Plug 'honza/vim-snippets'
+    Plug 'sainnhe/sonokai'
+    Plug 'vim-python/python-syntax'
+    Plug 'vim-scripts/ctags.vim'
+    " Plug 'crusoexia/vim-monokai'
+    Plug 'tmux-plugins/vim-tmux-focus-events'
+    Plug 'vim-airline/vim-airline'
+    Plug 'scrooloose/nerdcommenter'
+    Plug 'vim-airline/vim-airline-themes'
+    Plug 'luochen1990/rainbow'
+    Plug 'octol/vim-cpp-enhanced-highlight'
+    Plug 'Yggdroot/indentLine'
+    Plug 'preservim/nerdtree'
+    Plug 'Xuyuanp/nerdtree-git-plugin'
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    Plug 'majutsushi/tagbar'
+    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+    Plug 'junegunn/fzf.vim'
+call plug#end()
+ 
+filetype plugin on
+" 设置为双字宽显示，否则无法完整显示如:☆
+set ambiwidth=double
+set t_ut= " 防止vim背景颜色错误
+set showmatch " 高亮匹配括号
+set matchtime=1
+set noshowmode " block mode display
+set novisualbell noerrorbells
+set report=0
+set ignorecase
+set cursorline "highlight current line
+set noeb
+set softtabstop=4
+set shiftwidth=4
+set nobackup
+set autoread
+set nocompatible
+set nu "设置显示行号
+set backspace=2 "能使用backspace回删
+syntax on "语法检测
+set ruler "显示最后一行的状态
+set laststatus=2 "两行状态行+一行命令行
+set ts=4
+set expandtab
+set autoindent "设置c语言自动对齐
+set t_Co=256 "指定配色方案为256
+" set mouse=a "设置可以在VIM使用鼠标
+set selection=exclusive
+" set selectmode=mouse,key
+set tabstop=4 "设置TAB宽度
+set history=1000 "设置历史记录条数
+set shortmess=atl
+set clipboard+=unnamed
+set cmdheight=1
+if version >= 603
+    set helplang=cn
+    set encoding=utf-8
 endif
 set fencs=utf-8,ucs-bom,shift-jis,gb18030,gbk,gb2312,cp936
-
 set termencoding=utf-8
 set encoding=utf-8
 set fileencodings=ucs-bom,utf-8,cp936
-set fileencoding=utf-8
-" 常用设置
-" 设置行号
-set number
-" 按F2 进入粘贴模式
-" set pastetoggle=<F2>
-" 高亮搜索
-set hlsearch
-" 设置折叠方式
-set foldmethod=indent
+" set updatetime=300
+set shortmess+=c
+set signcolumn=yes
+" reset cursor when vim exits
+au VimLeave * set guicursor=a:ver25-blinkon0
+" +================================== 按键映射 =======================================+ "
+ 
+" self key map:
+" <leader>s : open key
+" <leader>d : close key
+" <leader>e : norm key
 " 一些方便的映射
-let mapleader=','
-let g:mapleader=','
-
-" 使用 jj  进入 normal 模式
-" inoremap jj <Esc>`^
-" 使用 leader+w 直接保存
-inoremap <leader>w <Esc>:w<cr>
-noremap <leader>w :w<cr>
-
-" 切换 buffer
-nnoremap <silent> [b :bprevious<CR>
-nnoremap <silent> [n :bnext<CR>
-" use ctrl+h/j/k/l switch window
+nnoremap <silent> <F4> :TagbarToggle<CR> " 将tagbar的开关按键设置为 F4
+nmap <leader>sp :set paste<CR>i
+nmap <leader>dp :set nopaste<CR> 
+nnoremap ; :
+xnoremap ; :
+nnoremap <F3> :NERDTreeToggle<CR> " 开启/关闭nerdtree快捷键
+nnoremap j gj
+nnoremap k gk
+nnoremap ^ g^
+nnoremap $ g$
+nnoremap <leader>dh :noh<CR>
+ 
+" +================================ 可视化缩进 =====================================+ "
+" set notermguicolors
+let g:sonokai_style = 'shusia'
+" let g:sonokai_enable_italic = 1
+" let g:sonokai_disable_italic_comment = 1
+colo sonokai
+set background=dark
+hi CursorLine ctermfg=NONE ctermbg=NONE cterm=NONE
+hi Normal ctermfg=NONE ctermbg=234 guifg=NONE
+hi LineNr ctermfg=yellow ctermbg=236 cterm=NONE
+" hi Terminal ctermfg=NONE ctermfg=NONE cterm=NONE
+hi EndOfBuffer ctermbg=NONE
+" visual mode bg
+set foldmethod=indent " 设置默认折叠方式为缩进
+set foldlevelstart=99 " 每次打开文件时关闭折叠
+ 
+" hi Normal ctermfg=252 ctermbg=none "背景透明
+" au FileType gitcommit,gitrebase let g:gutentags_enabled=0
+if has("autocmd")
+    au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
+ 
+let g:python_highlight_all = 1
+" +================================ 可视化缩进 =====================================+ "
+ 
+let g:indent_guides_enable_on_vim_startup = 0  " 默认关闭
+let g:indent_guides_guide_size            = 1  " 指定对齐线的尺寸
+let g:indent_guides_start_level           = 2  " 从第二层开始可视化显示缩进
+ 
+" +================================== NERDTree =======================================+ "
+" autocmd vimenter * NERDTree  "自动开启Nerdtree
+let g:NERDTreeWinSize = 25 "设定 NERDTree 视窗大小
+let NERDTreeShowBookmarks=1  " 开启Nerdtree时自动显示Bookmarks
+"打开vim时如果没有文件自动打开NERDTree
+" autocmd vimenter * if !argc()|NERDTree|endif
+"当NERDTree为剩下的唯一窗口时自动关闭
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+" 设置树的显示图标
+let g:NERDTreeDirArrowExpandable = '+'
+let g:NERDTreeDirArrowCollapsible = '-'
+let NERDTreeIgnore = ['\.pyc$']  " 过滤所有.pyc文件不显示
+let g:NERDTreeShowLineNumbers=0 " 是否显示行号
+let g:NERDTreeHidden=0     "不显示隐藏文件
+""Making it prettier
+let NERDTreeMinimalUI = 1
+let NERDTreeDirArrows = 1
+" autocmd vimenter *  NERDTreeToggle
 noremap <C-h> <C-w>h
 noremap <C-j> <C-w>j
 noremap <C-k> <C-w>k
 noremap <C-l> <C-w>l
-"设置下划线
-set cursorline
-"hi CursorLine   cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
+nmap <tab> :bn<cr> "设置tab键映射"
+nmap <C-D> :bdelete<cr> "设置ctrl+D 关闭buffer"
+ 
+ 
+" +================================== coc.nvim  ======================================+ "
+" if hidden is not set, TextEdit might fail.
+set hidden
+" Some servers have issues with backup files, see #649
+set nobackup
+set nowritebackup
+ 
+" You will have bad experience for diagnostic messages when it's default 4000.
+set updatetime=300
+ 
+" don't give |ins-completion-menu| messages.
+set shortmess+=c
+ 
+" always show signcolumns
+set signcolumn=yes
+ 
+ 
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+ 
+" Use <c-space> to trigger completion.
+inoremap <silent><expr> <c-space> coc#refresh()
+ 
+" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
+" Coc only does snippet and additional edit on confirm.
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+" Or use `complete_info` if your vim support it, like:
+" inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+ 
+" Use `[g` and `]g` to navigate diagnostics
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+" Remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+ 
+" Use K to show documentation in preview window
+"nnoremp <silent> K :call <SID>show_documentation()<CR>
+ 
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+ 
+" Highlight symbol under cursor on CursorHold
+" autocmd CursorHold * silent call CocActionAsync('highlight')
+ 
+" Remap for rename current word
+nmap <leader>rn <Plug>(coc-rename)
+ 
+" Remap for format selected region
+xmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+ 
+"augroup mygroup
+"  autocmd!
+  " Setup formatexpr specified filetype(s).
+"  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  " Update signature help on jump placeholder
+"  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+"augroup end
+ 
+" Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
+ 
+" Remap for do codeAction of current line
+nmap <leader>ac  <Plug>(coc-codeaction)
+" Fix autofix problem of current line
+nmap <leader>qf  <Plug>(coc-fix-current)
+ 
+" Create mappings for function text object, requires document symbols feature of languageserver.
+xmap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap if <Plug>(coc-funcobj-i)
+omap af <Plug>(coc-funcobj-a)
+ 
+" Use `:Format` to format current buffer
+command! -nargs=0 Format :call CocAction('format')
+ 
+" Use `:Fold` to fold current buffer
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+ 
+" use `:OR` for organize import of current buffer
+command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+"
+inoremap <silent><expr> <TAB>
+       \ pumvisible() ? coc#_select_confirm() :
+       \ coc#expandableOrJumpable() ? \"\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+       \ <SID>check_back_space() ? \"\<TAB>" :
+       \ coc#refresh()
 
-" Sudo to write
-cnoremap w!! w !sudo tee % >/dev/null
-" json 格式化
-com! FormatJSONPy2Utf8 %!python -c "import json, sys, collections; print json.dumps(json.load(sys.stdin, object_pairs_hook=collections.OrderedDict), ensure_ascii=False, indent=2)"
-
-
-" 插件设置，这里使用了 vim-plug
-call plug#begin('~/.vim/plugged')
-
-" 安装插件只需要把 github 地址放到这里重启后执行 :PlugInstall 就好了
-Plug 'mhinz/vim-startify'
-Plug 'preservim/nerdtree'
-" Plug 'dense-analysis/ale'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'skywind3000/asyncrun.vim'
-Plug 'jiangmiao/auto-pairs'
-Plug 'tomasr/molokai'
-Plug 'altercation/vim-colors-solarized'
-Plug 'Yggdroot/indentLine'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes' "airline 的主题
-call plug#end()
-"主题设置
-syntax enable
-colorscheme molokai
-let g:molokai_original = 1
-let g:rehash256 = 1
-set background=dark
-set t_Co=256
-"colorscheme solarized
-
-"代码编译设置
-" 自动打开 quickfix window ，高度为 6
-let g:asyncrun_open = 6
-
-" 任务结束时候响铃提醒
-let g:asyncrun_bell = 1
-
-" 设置 F10 打开/关闭 Quickfix 窗口
-nnoremap <F10> :call asyncrun#quickfix_toggle(6)<cr>
-nnoremap <silent> <F9> :AsyncRun gcc -Wall -O2 "$(VIM_FILEPATH)" -o "$(VIM_FILEDIR)/$(VIM_FILENOEXT)" <cr>
-nnoremap <silent> <F5> :AsyncRun -raw -cwd=$(VIM_FILEDIR) "$(VIM_FILEDIR)/$(VIM_FILENOEXT)" <cr>
-let g:asyncrun_rootmarks = ['.svn', '.git', '.root', '_darcs', 'build.xml']
-nnoremap <silent> <F7> :AsyncRun -cwd=<root> make <cr>
-nnoremap <silent> <F4> :AsyncRun -cwd=<root> cmake . <cr>
-
-" 插件相关配置
-" 禁止 startify 自动切换目录
-let g:startify_change_to_dir = 0
-
-" nerdtree
-nmap ,v :NERDTreeFind<cr>
-nmap ,g :NERDTreeToggle<cr>
-" 设置NerdTree
-map <F3> :NERDTreeMirror<CR>
-map <F3> :NERDTreeToggle<CR>
-" 切换 buffer
-nnoremap <silent> [b :bprevious<CR>
-nnoremap <silent> [n :bnext<CR>
-
-let g:ycm_seed_identifiers_with_syntax = 1
-"在注释中也开启补全
-let g:ycm_complete_in_comments = 1
-let g:ycm_collect_identifiers_from_comments_and_strings = 0
-"字符串中也开启补全
-let g:ycm_complete_in_strings = 1
-"自动开启语义补全
-let g:ycm_seed_identifiers_with_syntax = 1
-let g:ycm_add_preview_to_completeopt = 0
-let g:ycm_show_diagnostics_ui = 0
-let g:ycm_server_log_level = 'info'
-let g:ycm_min_num_identifier_candidate_chars = 2
-let g:ycm_collect_identifiers_from_comments_and_strings = 1
-let g:ycm_complete_in_strings=1
-let g:ycm_key_invoke_completion = '<c-z>'
-set completeopt=menu,menuone
-
-noremap <c-z> <NOP>
-
-
-let g:ycm_semantic_triggers =  {
-           \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
-           \ 'cs,lua,javascript': ['re!\w{2}'],
-           \ }
-
-set foldenable              " 开始折叠
-set foldmethod=syntax       " 设置语法折叠
-set foldcolumn=0            " 设置折叠区域的宽度
-setlocal foldlevel=1        " 设置折叠层数为
-set foldlevelstart=99       " 打开文件是默认不折叠代码
-
-"set foldclose=all          " 设置为自动关闭折叠
-" nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR>
-" 用空格键来开关折叠
-
-
-" ale-setting {{{
-
-let g:ale_set_highlights = 0
-"自定义error和warning图标
-let g:ale_sign_error = '✗'
-let g:ale_sign_warning = '⚡'
-"在vim自带的状态栏中整合ale
-let g:ale_statusline_format = ['✗ %d', '⚡ %d', '✔ OK']
-"显示Linter名称,出错或警告等相关信息
-let g:ale_echo_msg_error_str = 'E'
-let g:ale_echo_msg_warning_str = 'W'
-let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
-"打开文件时不进行检查
-let g:ale_lint_on_enter = 1 
-
-"普通模式下，sp前往上一个错误或警告，sn前往下一个错误或警告
-nmap sp <Plug>(ale_previous_wrap)
-nmap sn <Plug>(ale_next_wrap)
-"<Leader>s触发/关闭语法检查
-nmap <Leader>s :ALEToggle<CR>
-"<Leader>d查看错误或警告的详细信息
-nmap <Leader>d :ALEDetail<CR>
-"使用clang对c和c++进行语法检查，对python使用pylint进行语法检查
-let g:ale_linters = {
-\   'c++': ['clang','gcc'],
-\   'c': ['clang'],
-\   'python': ['pylint'],
-\}
-let g:ale_list_window_size = 10
-" }}}
-let g:AutoPairs = {'(':')', '[':']', '{':'}',"'":"'",'"':'"'}
-let g:AutoPairs['<']='>'
-let g:AutoPairsMapCR = 1
-
-let g:indent_guides_guide_size            = 1  " 指定对齐线的尺寸
-let g:indent_guides_start_level           = 2  " 从第二层开始可视化显示缩进
-
-" 设置状态栏
+" function! s:check_back_space() abort
+"   let col = col('.') - 1
+"   return !col || getline('.')[col - 1]  =~# '\s'
+" endfunction
+"
+" let g:coc_snippet_next = '<tab>'
+" +=================================== tagbar =======================================+ "
+ 
+let g:tagbar_width=30
+" +================================== airline =======================================+ "
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#left_alt_sep = '|'
 let g:airline#extensions#tabline#buffer_nr_show = 0
 let g:airline#extensions#tabline#formatter = 'default'
-let g:airline_theme = 'desertink'  " 主题
+let g:airline_theme = 'desertink'
 let g:airline#extensions#keymap#enabled = 1
 let g:airline#extensions#tabline#buffer_idx_mode = 1
 let g:airline#extensions#tabline#buffer_idx_format = {
@@ -190,7 +269,6 @@ let g:airline#extensions#tabline#buffer_idx_format = {
        \ '8': '8 ',
        \ '9': '9 '
        \}
-" 设置切换tab的快捷键 <\> + <i> 切换到第i个 tab
 nmap <leader>1 <Plug>AirlineSelectTab1
 nmap <leader>2 <Plug>AirlineSelectTab2
 nmap <leader>3 <Plug>AirlineSelectTab3
@@ -200,140 +278,61 @@ nmap <leader>6 <Plug>AirlineSelectTab6
 nmap <leader>7 <Plug>AirlineSelectTab7
 nmap <leader>8 <Plug>AirlineSelectTab8
 nmap <leader>9 <Plug>AirlineSelectTab9
-" 设置切换tab的快捷键 <\> + <-> 切换到前一个 tab
 nmap <leader>- <Plug>AirlineSelectPrevTab
-" 设置切换tab的快捷键 <\> + <+> 切换到后一个 tab
-nmap <leader>+ <Plug>AirlineSelectNextTab
-" 设置切换tab的快捷键 <\> + <q> 退出当前的 tab
+nmap <leader>= <Plug>AirlineSelectNextTab
 nmap <leader>q :bp<cr>:bd #<cr>
-" 修改了一些个人不喜欢的字符
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
 let g:airline_symbols.linenr = "CL" " current line
-let g:airline_symbols.whitespace = '|'
+let g:airline_symbols.whitespace = ''
+" let g:airline_left_sep = ']'
+" let g:airline_left_alt_sep = ')'
+" let g:airline_right_sep = '['
+" let g:airline_right_alt_sep = '('
 let g:airline_symbols.maxlinenr = 'Ml' "maxline
 let g:airline_symbols.branch = 'BR'
 let g:airline_symbols.readonly = "RO"
 let g:airline_symbols.dirty = "DT"
 let g:airline_symbols.crypt = "CR"
-nmap <tab> :bn<cr> "设置tab键映射"
-nmap <C-D> :bdelete<cr> "设置ctrl+D 关闭buffer"
-
-
-
-
-
-" +================================== coc.nvim  ======================================+ "
-" if hidden is not set, TextEdit might fail.
-set hidden
-" Some servers have issues with backup files, see #649
-set nobackup
-set nowritebackup
-
-" You will have bad experience for diagnostic messages when it's default 4000.
-set updatetime=300
-
-" don't give |ins-completion-menu| messages.
-set shortmess+=c
-
-" always show signcolumns
-set signcolumn=yes
-
-" Use tab for trigger completion with characters ahead and navigate.
-" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-" Use <c-space> to trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
-
-" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
-" Coc only does snippet and additional edit on confirm.
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-" Or use `complete_info` if your vim support it, like:
-" inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
-
-" Use `[g` and `]g` to navigate diagnostics
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
-" Remap keys for gotos
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-
-" Use K to show documentation in preview window
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
-
-" Highlight symbol under cursor on CursorHold
-autocmd CursorHold * silent call CocActionAsync('highlight')
-
-" Remap for rename current word
-nmap <leader>rn <Plug>(coc-rename)
-
-" Remap for format selected region
-xmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
-
-augroup mygroup
-  autocmd!
-  " Setup formatexpr specified filetype(s).
-  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-  " Update signature help on jump placeholder
-  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-augroup end
-
-" Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
-
-" Remap for do codeAction of current line
-nmap <leader>ac  <Plug>(coc-codeaction)
-" Fix autofix problem of current line
-nmap <leader>qf  <Plug>(coc-fix-current)
-
-" Create mappings for function text object, requires document symbols feature of languageserver.
-xmap if <Plug>(coc-funcobj-i)
-xmap af <Plug>(coc-funcobj-a)
-omap if <Plug>(coc-funcobj-i)
-omap af <Plug>(coc-funcobj-a)
-
-" Use `:Format` to format current buffer
-command! -nargs=0 Format :call CocAction('format')
-
-" Use `:Fold` to fold current buffer
-command! -nargs=? Fold :call     CocAction('fold', <f-args>)
-
-" use `:OR` for organize import of current buffer
-command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
-"
-" inoremap <silent><expr> <TAB>
-"       \ pumvisible() ? coc#_select_confirm() :
-"       \ coc#expandableOrJumpable() ? \"\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
-"       \ <SID>check_back_space() ? \"\<TAB>" :
-"       \ coc#refresh()
-"
-" function! s:check_back_space() abort
-"   let col = col('.') - 1
-"   return !col || getline('.')[col - 1]  =~# '\s'
-" endfunction
-"
-" let g:coc_snippet_next = '<tab>'
-" +=================================== tagbar =======================================+ "
+" +=============================== NERD Commenter ====================================+ "
+"add spaces after comment delimiters by default
+let g:NERDSpaceDelims = 1
+au FileType python let g:NERDSpaceDelims = 0
+ 
+" Use compact syntax for prettified multi-line comments
+let g:NERDCompactSexyComs = 1
+ 
+" Align line-wise comment delimiters flush left instead of following code indentation
+let g:NERDDefaultAlign = 'left'
+ 
+" Set a language to use its alternate delimiters by default
+let g:NERDAltDelims_java = 1
+ 
+" Add your own custom formats or override the defaults
+" let g:NERDCustomDelimiters = { 'c': { 'left': '/**','right': '*/' } }
+ 
+" Allow commenting and inverting empty lines (useful when commenting a region)
+let g:NERDCommentEmptyLines = 1
+ 
+" Enable trimming of trailing whitespace when uncommenting
+let g:NERDTrimTrailingWhitespace = 1
+ 
+" Enable NERDCommenterToggle to check all selected lines is commented or not
+let g:NERDToggleCheckAllLines = 1
+ 
+ 
+" +=============================== rainbow Parentheses ==============================+ "
+" ((((((()))))))
+"let g:rainbow_active = 1
+"let g:rainbow_conf = {
+"\   'guifgs': ['#FFE66F', '#00FFFF', '#46A3FF', '#AAAAFF', '#FFB5B5'],
+"\   'ctermfgs': ['lightyellow', 'lightcyan','lightblue', 'lightmagenta'],
+"\   'operators': '_,_',
+"\   'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
+"\}
+ 
+" +=============================== fzf  ==============================+ "
+nmap <C-p> :Files<CR>
+nmap <C-e> :Buffers<CR>
+let g:fzf_action = { 'ctrl-e': 'edit' }
